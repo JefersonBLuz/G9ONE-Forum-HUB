@@ -4,7 +4,13 @@ import com.JefersonBLuz.forumhub.dto.topico.DadosCadastroTopico;
 import com.JefersonBLuz.forumhub.dto.topico.DadosDetalhamentoTopico;
 import com.JefersonBLuz.forumhub.service.TopicoService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,5 +39,15 @@ public class TopicoController {
                 .buildAndExpand(topicoCadastrado.id())
                 .toUri();
         return ResponseEntity.created(uri).body(topicoCadastrado);
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<DadosDetalhamentoTopico>> listar(
+            @RequestParam(required = false) String nomeCurso,
+            @RequestParam(required = false) Integer ano,
+            @PageableDefault(size = 10, sort = "dataCriacao", direction = Sort.Direction.ASC) Pageable pageable
+    ) {
+        Page<DadosDetalhamentoTopico> pagina = topicoService.listar(nomeCurso, ano, pageable);
+        return ResponseEntity.ok(pagina);
     }
 }

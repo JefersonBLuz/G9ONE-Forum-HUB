@@ -10,8 +10,13 @@ import com.JefersonBLuz.forumhub.dto.topico.DadosCadastroTopico;
 import com.JefersonBLuz.forumhub.dto.topico.DadosDetalhamentoTopico;
 import com.JefersonBLuz.forumhub.infra.exception.RegraDeNegocioException;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Service
 public class TopicoService {
@@ -45,5 +50,37 @@ public class TopicoService {
         Topico topico = new Topico(dados.titulo(), dados.mensagem(), autor, curso);
         Topico topicoSalvo = topicoRepository.save(topico);
         return new DadosDetalhamentoTopico(topicoSalvo);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<DadosDetalhamentoTopico> listar(String nomeCurso, Integer ano, Pageable pageable) {
+        if (ano != null && ano < 1) {
+            throw new RegraDeNegocioException("O ano informado deve ser maior que zero.");
+        }
+
+        boolean filtrarPorCurso = nomeCurso != null && !nomeCurso.isBlank();
+        boolean filtrarPorAno = ano != null;
+
+        Page<Topico> paginaTopicos;
+        if (filtrarPorCurso && filtrarPorAno) {
+            LocalDateTime inicioAno = LocalDate.of(ano, 1, 1).atStartOfDay();
+            LocalDateTime fimAno = LocalDate.of(ano, 12, 31).atTime(23, 59, 59);
+            paginaTopicos = topicoRepository.findAllByCursoNomeIgnoreCaseAndDataCriacaoBetween(
+                    nomeCurso.trim(),
+                    inicioAno,
+                    fimAno,
+                    pageable
+            );
+        } else if (filtrarPorCurso) {
+            paginaTopicos = topicoRepository.findAllByCursoNomeIgnoreCase(nomeCurso.trim(), pageable);
+        } else if (filtrarPorAno) {
+            LocalDateTime inicioAno = LocalDate.of(ano, 1, 1).atStartOfDay();
+            LocalDateTime fimAno = LocalDate.of(ano, 12, 31).atTime(23, 59, 59);
+            paginaTopicos = topicoRepository.findAllByDataCriacaoBetween(inicioAno, fimAno, pageable);
+        } else {
+            paginaTopicos = topicoRepository.findAll(pageable);
+        }
+
+        return paginaTopicos.map(DadosDetalhamentoTopico::new);
     }
 }
