@@ -1,4 +1,4 @@
-package com.JefersonBLuz.forumhub.domain.topico;
+package com.JefersonBLuz.forumhub.domain.Enum;
 
 public enum StatusTopico {
     NAO_RESPONDIDO,

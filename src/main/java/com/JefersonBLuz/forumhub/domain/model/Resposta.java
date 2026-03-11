@@ -1,7 +1,5 @@
-package com.JefersonBLuz.forumhub.domain.resposta;
+package com.JefersonBLuz.forumhub.domain.model;
 
-import com.JefersonBLuz.forumhub.domain.topico.Topico;
-import com.JefersonBLuz.forumhub.domain.usuario.Usuario;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

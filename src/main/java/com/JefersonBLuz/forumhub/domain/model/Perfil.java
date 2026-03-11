@@ -1,4 +1,4 @@
-package com.JefersonBLuz.forumhub.domain.curso;
+package com.JefersonBLuz.forumhub.domain.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,29 +10,23 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 @Entity
-@Table(name = "cursos")
-public class Curso {
+@Table(name = "perfis")
+public class Perfil {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotBlank
-    @Size(max = 120)
-    @Column(nullable = false, length = 120)
+    @Size(max = 80)
+    @Column(nullable = false, length = 80, unique = true)
     private String nome;
 
-    @NotBlank
-    @Size(max = 120)
-    @Column(nullable = false, length = 120)
-    private String categoria;
-
-    protected Curso() {
+    protected Perfil() {
     }
 
-    public Curso(String nome, String categoria) {
+    public Perfil(String nome) {
         this.nome = nome;
-        this.categoria = categoria;
     }
 
     public Long getId() {
@@ -41,9 +35,5 @@ public class Curso {
 
     public String getNome() {
         return nome;
-    }
-
-    public String getCategoria() {
-        return categoria;
     }
 }
