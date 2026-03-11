@@ -1,0 +1,4 @@
+INSERT INTO perfis (nome)
+VALUES ('ROLE_USER'),
+       ('ROLE_ADMIN')
+ON CONFLICT (nome) DO NOTHING;
