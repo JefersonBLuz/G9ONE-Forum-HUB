@@ -1,7 +1,7 @@
 <h1 align="center">💬 ForumHub API</h1>
 
 <p align="center">
-  <img src="URL_DA_SUA_IMAGEM_AQUI" alt="Capa do Projeto ForumHub" width="700">
+  <img width="500" height="500" alt="Image" src="https://github.com/user-attachments/assets/b067f0ea-40a2-4039-a416-9bc2eb58fe22" />
 </p>
 
 <p align="center">
