@@ -4,6 +4,8 @@ import com.JefersonBLuz.forumhub.dto.topico.DadosAtualizacaoTopico;
 import com.JefersonBLuz.forumhub.dto.topico.DadosCadastroTopico;
 import com.JefersonBLuz.forumhub.dto.topico.DadosDetalhamentoTopico;
 import com.JefersonBLuz.forumhub.service.TopicoService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +27,8 @@ import java.net.URI;
 
 @RestController
 @RequestMapping("/topicos")
+@Tag(name = "Topicos")
+@SecurityRequirement(name = "bearerAuth")
 public class TopicoController {
 
     private final TopicoService topicoService;

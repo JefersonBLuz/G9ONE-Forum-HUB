@@ -35,6 +35,11 @@ public class Curso {
         this.categoria = categoria;
     }
 
+    public void atualizarDados(String nome, String categoria) {
+        this.nome = nome;
+        this.categoria = categoria;
+    }
+
     public Long getId() {
         return id;
     }

@@ -3,6 +3,8 @@ package com.JefersonBLuz.forumhub.controller.auth;
 import com.JefersonBLuz.forumhub.dto.auth.DadosAutenticacao;
 import com.JefersonBLuz.forumhub.dto.auth.DadosTokenJWT;
 import com.JefersonBLuz.forumhub.infra.security.TokenService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/login")
+@Tag(name = "Autenticacao")
 public class AutenticacaoController {
 
     private final AuthenticationManager authenticationManager;
@@ -26,6 +29,7 @@ public class AutenticacaoController {
     }
 
     @PostMapping
+    @Operation(summary = "Realiza login e retorna token JWT")
     public DadosTokenJWT efetuarLogin(@RequestBody @Valid DadosAutenticacao dados) {
         UsernamePasswordAuthenticationToken token =
                 new UsernamePasswordAuthenticationToken(dados.email(), dados.senha());

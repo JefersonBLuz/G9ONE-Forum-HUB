@@ -4,6 +4,8 @@ import com.JefersonBLuz.forumhub.dto.usuario.DadosAtualizacaoUsuario;
 import com.JefersonBLuz.forumhub.dto.usuario.DadosCadastroUsuario;
 import com.JefersonBLuz.forumhub.dto.usuario.DadosDetalhamentoUsuario;
 import com.JefersonBLuz.forumhub.service.UsuarioService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,6 +23,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/usuario")
+@Tag(name = "Usuarios (Autores)")
+@SecurityRequirement(name = "bearerAuth")
 public class UsuarioController {
 
     private final UsuarioService usuarioService;

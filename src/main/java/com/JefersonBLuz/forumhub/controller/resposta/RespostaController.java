@@ -4,6 +4,8 @@ import com.JefersonBLuz.forumhub.dto.resposta.DadosAtualizacaoResposta;
 import com.JefersonBLuz.forumhub.dto.resposta.DadosCadastroResposta;
 import com.JefersonBLuz.forumhub.dto.resposta.DadosDetalhamentoResposta;
 import com.JefersonBLuz.forumhub.service.RespostaService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,6 +23,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/respostas")
+@Tag(name = "Respostas")
+@SecurityRequirement(name = "bearerAuth")
 public class RespostaController {
 
     private final RespostaService respostaService;
