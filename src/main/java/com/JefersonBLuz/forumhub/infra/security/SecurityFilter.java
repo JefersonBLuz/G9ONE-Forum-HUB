@@ -50,6 +50,10 @@ public class SecurityFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } catch (JWTVerificationException ignored) {
                 SecurityContextHolder.clearContext();
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json");
+                response.getWriter().write("{\"erro\":\"Token JWT invalido ou expirado.\"}");
+                return;
             }
         }
 
