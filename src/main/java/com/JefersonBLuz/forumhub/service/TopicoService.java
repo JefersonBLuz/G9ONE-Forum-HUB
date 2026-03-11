@@ -12,13 +12,15 @@ import com.JefersonBLuz.forumhub.dto.topico.DadosDetalhamentoTopico;
 import com.JefersonBLuz.forumhub.infra.exception.RegraDeNegocioException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class TopicoService {
@@ -55,10 +57,12 @@ public class TopicoService {
     }
 
     @Transactional(readOnly = true)
-    public Page<DadosDetalhamentoTopico> listar(String nomeCurso, Integer ano, Pageable pageable) {
+    public Page<DadosDetalhamentoTopico> listar(String nomeCurso, Integer ano, Integer page, Integer limit, String sort) {
         if (ano != null && ano < 1) {
             throw new RegraDeNegocioException("O ano informado deve ser maior que zero.");
         }
+
+        PageRequest pageableSeguro = criarPageRequest(page, limit, sort);
 
         boolean filtrarPorCurso = nomeCurso != null && !nomeCurso.isBlank();
         boolean filtrarPorAno = ano != null;
@@ -71,19 +75,45 @@ public class TopicoService {
                     nomeCurso.trim(),
                     inicioAno,
                     fimAno,
-                    pageable
+                    pageableSeguro
             );
         } else if (filtrarPorCurso) {
-            paginaTopicos = topicoRepository.findAllByCursoNomeIgnoreCase(nomeCurso.trim(), pageable);
+            paginaTopicos = topicoRepository.findAllByCursoNomeIgnoreCase(nomeCurso.trim(), pageableSeguro);
         } else if (filtrarPorAno) {
             LocalDateTime inicioAno = LocalDate.of(ano, 1, 1).atStartOfDay();
             LocalDateTime fimAno = LocalDate.of(ano, 12, 31).atTime(23, 59, 59);
-            paginaTopicos = topicoRepository.findAllByDataCriacaoBetween(inicioAno, fimAno, pageable);
+            paginaTopicos = topicoRepository.findAllByDataCriacaoBetween(inicioAno, fimAno, pageableSeguro);
         } else {
-            paginaTopicos = topicoRepository.findAll(pageable);
+            paginaTopicos = topicoRepository.findAll(pageableSeguro);
         }
 
         return paginaTopicos.map(DadosDetalhamentoTopico::new);
+    }
+
+    private PageRequest criarPageRequest(Integer page, Integer limit, String sort) {
+        int pagina = page == null ? 0 : Math.max(page, 0);
+        int tamanho = limit == null ? 10 : Math.min(Math.max(limit, 1), 100);
+
+        Set<String> ordenacoesPermitidas = Set.of("id", "titulo", "mensagem", "dataCriacao", "estado");
+        String propriedade = "dataCriacao";
+        Sort.Direction direcao = Sort.Direction.ASC;
+
+        if (sort != null && !sort.isBlank()) {
+            String[] partes = sort.split(",");
+            String coluna = partes[0].trim();
+            if (ordenacoesPermitidas.contains(coluna)) {
+                propriedade = coluna;
+            }
+
+            if (partes.length > 1) {
+                String valorDirecao = partes[1].trim();
+                if ("desc".equalsIgnoreCase(valorDirecao)) {
+                    direcao = Sort.Direction.DESC;
+                }
+            }
+        }
+
+        return PageRequest.of(pagina, tamanho, Sort.by(new Sort.Order(direcao, propriedade)));
     }
 
     @Transactional(readOnly = true)

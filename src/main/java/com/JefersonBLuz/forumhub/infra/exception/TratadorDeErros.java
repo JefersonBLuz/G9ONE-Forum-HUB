@@ -1,6 +1,7 @@
 package com.JefersonBLuz.forumhub.infra.exception;
 
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -40,6 +41,11 @@ public class TratadorDeErros {
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<String> tratarErro401(BadCredentialsException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciais invalidas.");
+    }
+
+    @ExceptionHandler(InvalidDataAccessApiUsageException.class)
+    public ResponseEntity<String> tratarErro400SortInvalido(InvalidDataAccessApiUsageException ex) {
+        return ResponseEntity.badRequest().body("Parametro de ordenacao invalido para esta consulta.");
     }
 
     private record DadosErroValidacao(String campo, String mensagem) {

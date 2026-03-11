@@ -4,13 +4,11 @@ import com.JefersonBLuz.forumhub.dto.topico.DadosAtualizacaoTopico;
 import com.JefersonBLuz.forumhub.dto.topico.DadosCadastroTopico;
 import com.JefersonBLuz.forumhub.dto.topico.DadosDetalhamentoTopico;
 import com.JefersonBLuz.forumhub.service.TopicoService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -50,12 +48,15 @@ public class TopicoController {
     }
 
     @GetMapping
+    @Operation(summary = "Lista topicos com filtros e paginacao opcionais")
     public ResponseEntity<Page<DadosDetalhamentoTopico>> listar(
             @RequestParam(required = false) String nomeCurso,
             @RequestParam(required = false) Integer ano,
-            @PageableDefault(size = 10, sort = "dataCriacao", direction = Sort.Direction.ASC) Pageable pageable
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer limit,
+            @RequestParam(required = false) String sort
     ) {
-        Page<DadosDetalhamentoTopico> pagina = topicoService.listar(nomeCurso, ano, pageable);
+        Page<DadosDetalhamentoTopico> pagina = topicoService.listar(nomeCurso, ano, page, limit, sort);
         return ResponseEntity.ok(pagina);
     }
 
