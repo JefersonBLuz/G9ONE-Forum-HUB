@@ -125,4 +125,18 @@ public class TopicoService {
 
         return new DadosDetalhamentoTopico(topico);
     }
+
+    @Transactional
+    public void excluir(Long id) {
+        if (id == null || id < 1) {
+            throw new IllegalArgumentException("O id informado deve ser maior que zero.");
+        }
+
+        Optional<Topico> topicoOptional = topicoRepository.findById(id);
+        if (!topicoOptional.isPresent()) {
+            throw new EntityNotFoundException("Topico nao encontrado para o id informado.");
+        }
+
+        topicoRepository.deleteById(id);
+    }
 }
