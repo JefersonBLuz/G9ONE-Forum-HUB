@@ -63,6 +63,12 @@ public class Usuario {
         this.perfis.add(perfil);
     }
 
+    public void atualizarDados(String nome, String email, String senha) {
+        this.nome = nome;
+        this.email = email;
+        this.senha = senha;
+    }
+
     public Long getId() {
         return id;
     }

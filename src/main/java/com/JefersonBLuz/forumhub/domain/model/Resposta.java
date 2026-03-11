@@ -69,6 +69,13 @@ public class Resposta {
         this.solucao = true;
     }
 
+    public void atualizar(String mensagem, Topico topico, Usuario autor, Boolean solucao) {
+        this.mensagem = mensagem;
+        this.topico = topico;
+        this.autor = autor;
+        this.solucao = solucao;
+    }
+
     public Long getId() {
         return id;
     }
