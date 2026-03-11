@@ -1,0 +1,22 @@
+[{
+  "url": "http://localhost:8080/login",
+  "method": "POST",
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "body": {
+    "email": "admin@forumhub.local",
+    "senha": "123456"
+  }
+},
+{
+  "url": "http://localhost:8080/login",
+  "method": "POST",
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "body": {
+    "email": "admin@admin.com",
+    "senha": "admin123"
+  }
+}]
