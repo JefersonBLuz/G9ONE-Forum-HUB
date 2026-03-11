@@ -6,6 +6,7 @@ import com.JefersonBLuz.forumhub.domain.model.Usuario;
 import com.JefersonBLuz.forumhub.domain.repository.CursoRepository;
 import com.JefersonBLuz.forumhub.domain.repository.TopicoRepository;
 import com.JefersonBLuz.forumhub.domain.repository.UsuarioRepository;
+import com.JefersonBLuz.forumhub.dto.topico.DadosAtualizacaoTopico;
 import com.JefersonBLuz.forumhub.dto.topico.DadosCadastroTopico;
 import com.JefersonBLuz.forumhub.dto.topico.DadosDetalhamentoTopico;
 import com.JefersonBLuz.forumhub.infra.exception.RegraDeNegocioException;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class TopicoService {
@@ -82,5 +84,45 @@ public class TopicoService {
         }
 
         return paginaTopicos.map(DadosDetalhamentoTopico::new);
+    }
+
+    @Transactional(readOnly = true)
+    public DadosDetalhamentoTopico detalhar(Long id) {
+        if (id == null || id < 1) {
+            throw new IllegalArgumentException("O id informado deve ser maior que zero.");
+        }
+
+        Topico topico = topicoRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Topico nao encontrado para o id informado."));
+
+        return new DadosDetalhamentoTopico(topico);
+    }
+
+    @Transactional
+    public DadosDetalhamentoTopico atualizar(Long id, DadosAtualizacaoTopico dados) {
+        if (id == null || id < 1) {
+            throw new IllegalArgumentException("O id informado deve ser maior que zero.");
+        }
+
+        Optional<Topico> topicoOptional = topicoRepository.findById(id);
+        if (!topicoOptional.isPresent()) {
+            throw new EntityNotFoundException("Topico nao encontrado para o id informado.");
+        }
+
+        if (topicoRepository.existsByTituloAndMensagemAndIdNot(dados.titulo(), dados.mensagem(), id)) {
+            throw new RegraDeNegocioException("Ja existe um topico com o mesmo titulo e mensagem.");
+        }
+
+        Usuario autor = usuarioRepository.findById(dados.autorId())
+                .orElseThrow(() -> new EntityNotFoundException("Autor nao encontrado para o id informado."));
+
+        Curso curso = cursoRepository.findById(dados.cursoId())
+                .orElseThrow(() -> new EntityNotFoundException("Curso nao encontrado para o id informado."));
+
+        Topico topico = topicoOptional.get();
+        topico.atualizarConteudo(dados.titulo(), dados.mensagem());
+        topico.atualizarContexto(autor, curso);
+
+        return new DadosDetalhamentoTopico(topico);
     }
 }

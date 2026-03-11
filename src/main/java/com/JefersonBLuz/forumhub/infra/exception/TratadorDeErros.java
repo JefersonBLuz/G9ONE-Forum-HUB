@@ -31,6 +31,11 @@ public class TratadorDeErros {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> tratarErro400RegraDeEntrada(IllegalArgumentException ex) {
+        return ResponseEntity.badRequest().body(ex.getMessage());
+    }
+
     private record DadosErroValidacao(String campo, String mensagem) {
         DadosErroValidacao(FieldError erro) {
             this(erro.getField(), erro.getDefaultMessage());
