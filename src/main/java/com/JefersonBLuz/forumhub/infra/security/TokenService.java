@@ -13,13 +13,13 @@ import java.time.Instant;
 @Service
 public class TokenService {
 
-    @Value("${api.security.token.secret}")
+    @Value("${jwt.secret}")
     private String secret;
 
-    @Value("${api.security.token.issuer}")
+    @Value("${jwt.issuer}")
     private String issuer;
 
-    @Value("${api.security.token.expiration}")
+    @Value("${jwt.expiration}")
     private Long expirationInMillis;
 
     public String gerarToken(UserDetails userDetails) {
